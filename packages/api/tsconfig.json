@@ -19,10 +19,7 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
-      "@acme/api": ["../../packages/api/src/index.ts"],
-      "@acme/api/*": ["../../packages/api/src/*"],
-      "@acme/env": ["../../packages/env/src/server.ts"],
-      "@acme/env/*": ["../../packages/env/src/*"]
+      "@acme/api/*": ["./src/*"]
     }
   }
 }

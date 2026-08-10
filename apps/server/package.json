@@ -1,14 +1,16 @@
 {
-  "name": "@effect-framework/server",
+  "name": "@acme/server",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun --watch run src/index.ts"
+    "dev": "bun --watch run src/index.ts",
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
-    "@effect-framework/env": "workspace:*",
+    "@acme/api": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@acme/env": "workspace:*",
     "@effect/platform-node": "catalog:",
     "effect": "catalog:"
   },

@@ -1,35 +1,24 @@
-import { createServer } from "node:http";
-
-import { Env, serverOptions } from "@effect-framework/env/server";
 import { NodeHttpServer, NodeRuntime } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
-import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
+import { createServer } from "node:http";
 
-const Routes = HttpRouter.use(
-  Effect.fn(function* (router) {
-    yield* router.add(
-      "GET",
-      "/",
-      Effect.succeed(HttpServerResponse.text("Hello, World!")),
-    );
-    yield* router.add(
-      "GET",
-      "/hello",
-      Effect.succeed(
-        HttpServerResponse.jsonUnsafe({ message: "Hello, World!" }),
-      ),
-    );
-    yield* router.add(
-      "GET",
-      "/health",
-      Effect.succeed(HttpServerResponse.text("ok")),
-    );
-  }),
-);
+import { AppLayer } from "@acme/api/layer";
+import { DatabaseLayer, runMigrations } from "@acme/db/layer";
+import { Env, serverOptions } from "@acme/env/server";
 
-const HttpServerLive = HttpRouter.serve(Routes).pipe(
+const EnvLive = Env.layerWithDotEnv();
+
+const DatabaseLive = DatabaseLayer.pipe(Layer.provide(EnvLive));
+
+const HttpServerLive = AppLayer.pipe(
   Layer.provide(NodeHttpServer.layerConfig(createServer, serverOptions)),
-  Layer.provide(Env.layerWithDotEnv()),
+  Layer.provide(DatabaseLive),
+  Layer.provide(EnvLive),
 );
 
-NodeRuntime.runMain(Layer.launch(HttpServerLive));
+NodeRuntime.runMain(
+  Effect.gen(function* () {
+    yield* runMigrations.pipe(Effect.provide(DatabaseLive));
+    yield* Layer.launch(HttpServerLive);
+  }).pipe(Effect.scoped),
+);

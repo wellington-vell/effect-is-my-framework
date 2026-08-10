@@ -1,5 +1,3 @@
-import { fileURLToPath } from "node:url";
-
 import { NodeFileSystem } from "@effect/platform-node";
 import {
   Config,
@@ -7,21 +5,40 @@ import {
   Context,
   Effect,
   Layer,
+  Schema,
   type PlatformError,
 } from "effect";
+import { fileURLToPath } from "node:url";
 
 const defaultDotEnvPath = fileURLToPath(
   new URL("../../../.env", import.meta.url),
 );
 
-const nodeEnv = Config.literals(
-  ["development", "production", "test"],
-  "NODE_ENV",
-).pipe(Config.withDefault("development" as const));
+const defaultDatabaseUrl = "postgresql://postgres:postgres@localhost:5432/acme";
 
-const port = Config.port("PORT").pipe(Config.withDefault(3000));
+const EnvSchema = Schema.Struct({
+  NODE_ENV: Schema.Literals(["development", "production", "test"]),
+  PORT: Config.Port,
+  HOST: Schema.String,
+  DATABASE_URL: Schema.String,
+});
 
-const host = Config.string("HOST").pipe(Config.withDefault("0.0.0.0"));
+const nodeEnv = Config.schema(EnvSchema.fields.NODE_ENV, "NODE_ENV").pipe(
+  Config.withDefault("development" as const),
+);
+
+const port = Config.schema(EnvSchema.fields.PORT, "PORT").pipe(
+  Config.withDefault(3000),
+);
+
+const host = Config.schema(EnvSchema.fields.HOST, "HOST").pipe(
+  Config.withDefault("0.0.0.0"),
+);
+
+const databaseUrl = Config.schema(
+  EnvSchema.fields.DATABASE_URL,
+  "DATABASE_URL",
+).pipe(Config.withDefault(defaultDatabaseUrl));
 
 /**
  * Config fragment for `NodeHttpServer.layerConfig` listen options.
@@ -38,6 +55,7 @@ const envConfig = Config.all({
   nodeEnv,
   port,
   host,
+  databaseUrl,
 });
 
 export class Env extends Context.Service<
@@ -46,8 +64,9 @@ export class Env extends Context.Service<
     readonly nodeEnv: "development" | "production" | "test";
     readonly port: number;
     readonly host: string;
+    readonly databaseUrl: string;
   }
->()("@effect-framework/Env") {
+>()("@acme/Env") {
   static readonly config: Config.Config<Env["Service"]> = envConfig;
 
   /** Load env from `process.env` only. */

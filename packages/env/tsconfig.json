@@ -27,6 +27,6 @@
     "noPropertyAccessFromIndexSignature": false
   },
   "paths": {
-    "@effect-framework/env/*": ["./src/*"]
+    "@acme/env/*": ["./src/*"]
   }
 }

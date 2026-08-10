@@ -1,22 +1,30 @@
 {
-  "name": "@acme/env",
+  "name": "@acme/db",
   "private": true,
   "type": "module",
   "exports": {
-    "./server": "./src/server.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "build": "tsdown --clean",
     "clean": "rm -rf dist node_modules",
+    "db-check": "drizzle-kit check",
+    "db-gen": "drizzle-kit generate",
+    "db-migrate": "drizzle-kit migrate",
+    "db-push": "drizzle-kit push",
+    "db-studio": "drizzle-kit studio",
     "test": "vitest run"
   },
   "dependencies": {
-    "@effect/platform-node": "catalog:",
+    "@acme/env": "workspace:*",
+    "@effect/sql-pg": "catalog:",
+    "drizzle-orm": "catalog:",
     "effect": "catalog:"
   },
   "devDependencies": {
     "@effect/vitest": "catalog:",
     "@types/node": "catalog:",
+    "drizzle-kit": "catalog:",
     "tsdown": "catalog:",
     "vitest": "catalog:"
   }

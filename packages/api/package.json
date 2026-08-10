@@ -1,9 +1,9 @@
 {
-  "name": "@acme/env",
+  "name": "@acme/api",
   "private": true,
   "type": "module",
   "exports": {
-    "./server": "./src/server.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "build": "tsdown --clean",
@@ -11,6 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@acme/db": "workspace:*",
+    "@acme/env": "workspace:*",
     "@effect/platform-node": "catalog:",
     "effect": "catalog:"
   },

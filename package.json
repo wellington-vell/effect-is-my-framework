@@ -1,5 +1,5 @@
 {
-  "name": "effect-framework",
+  "name": "acme",
   "private": true,
   "workspaces": {
     "packages": [
@@ -7,20 +7,39 @@
       "packages/*"
     ],
     "catalog": {
-      "@effect/platform-node": "^4.0.0-beta.106",
+      "@effect/platform-node": "^4.0.0-beta.107",
+      "@effect/sql-pg": "4.0.0-beta.107",
       "@types/node": "^22.15.0",
-      "effect": "^4.0.0-beta.106",
+      "drizzle-kit": "1.0.0-rc.4",
+      "drizzle-orm": "1.0.0-rc.4",
+      "effect": "^4.0.0-beta.107",
       "typescript": "7.0.2",
-      "tsdown": "0.22.4"
+      "tsdown": "0.22.4",
+      "vitest": "^4.1.10",
+      "@effect/vitest": "^4.0.0-beta.107"
     }
   },
   "type": "module",
   "scripts": {
-    "dev": "turbo dev",
     "build": "turbo build",
-    "clean": "turbo clean",
     "check": "oxlint --type-aware --type-check apps/ packages/ && oxfmt --write .",
-    "prepare": "effect-tsgo patch --typescript --oxlint"
+    "clean": "turbo clean",
+    "clean-root": "rm -rf node_modules .turbo",
+    "db-check": "turbo -F @acme/db db-check",
+    "db-gen": "turbo -F @acme/db db-gen --",
+    "db-migrate": "turbo -F @acme/db db-migrate",
+    "db-push": "turbo -F @acme/db db-push",
+    "db-studio": "turbo -F @acme/db db-studio",
+    "dev": "turbo dev",
+    "dev-server": "turbo -F @acme/server dev",
+    "docker-build": "DOCKER_BUILDKIT=1 docker compose build --progress=plain && docker compose up -d",
+    "docker-clean": "docker compose down -v && docker system prune --all && docker system prune --volumes",
+    "docker-dev": "docker compose -f docker-compose.dev.yml up -d",
+    "docker-dev:reset": "docker compose -f docker-compose.dev.yml down -v && docker compose -f docker-compose.dev.yml up -d",
+    "docker-down": "docker compose down -v",
+    "prepare": "effect-tsgo patch --typescript --oxlint",
+    "sync": "bun update --interactive --recursive --latest",
+    "test": "turbo test"
   },
   "dependencies": {
     "effect": "catalog:"
@@ -29,6 +48,7 @@
     "@effect/language-service": "^0.87.2",
     "@effect/tsgo": "0.36.1",
     "@types/bun": "latest",
+    "drizzle-kit": "catalog:",
     "oxfmt": "^0.61.0",
     "oxlint": "1.77.0",
     "oxlint-tsgolint": "7.0.2001",
@@ -44,5 +64,8 @@
     "pnpm": "this-project-uses-bun",
     "yarn": "this-project-uses-bun"
   },
-  "packageManager": "bun@1.3.10"
+  "packageManager": "bun@1.3.10",
+  "patchedDependencies": {
+    "drizzle-orm@1.0.0-rc.4": "patches/drizzle-orm@1.0.0-rc.4.patch"
+  }
 }

@@ -11,7 +11,27 @@
       "cache": false,
       "persistent": true
     },
+    "test": {
+      "cache": false,
+      "persistent": true
+    },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "db-gen": {
+      "cache": false
+    },
+    "db-migrate": {
+      "cache": false
+    },
+    "db-push": {
+      "cache": false
+    },
+    "db-check": {
+      "cache": false
+    },
+    "db-studio": {
       "cache": false,
       "persistent": true
     }
