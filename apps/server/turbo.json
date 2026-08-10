@@ -1,0 +1,9 @@
+{
+  "tags": ["server"],
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "outputs": ["dist/server"]
+    }
+  }
+}
