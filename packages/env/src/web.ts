@@ -14,48 +14,31 @@ const defaultDotEnvPath = fileURLToPath(
   new URL("../../../.env", import.meta.url),
 );
 
-const defaultDatabaseUrl = "postgresql://postgres:postgres@localhost:5432/acme";
+const defaultApiBaseUrl = "http://localhost:3001";
 
 const EnvSchema = Schema.Struct({
   NODE_ENV: Schema.Literals(["development", "production", "test"]),
-  PORT: Config.Port,
-  HOST: Schema.String,
-  DATABASE_URL: Schema.String,
+  WEB_PORT: Config.Port,
+  VITE_API_BASE_URL: Schema.String,
 });
 
 const nodeEnv = Config.schema(EnvSchema.fields.NODE_ENV, "NODE_ENV").pipe(
   Config.withDefault("development" as const),
 );
 
-const port = Config.schema(EnvSchema.fields.PORT, "PORT").pipe(
-  Config.withDefault(3001),
+const port = Config.schema(EnvSchema.fields.WEB_PORT, "WEB_PORT").pipe(
+  Config.withDefault(3000),
 );
 
-const host = Config.schema(EnvSchema.fields.HOST, "HOST").pipe(
-  Config.withDefault("0.0.0.0"),
-);
-
-const databaseUrl = Config.schema(
-  EnvSchema.fields.DATABASE_URL,
-  "DATABASE_URL",
-).pipe(Config.withDefault(defaultDatabaseUrl));
-
-/**
- * Config fragment for `NodeHttpServer.layerConfig` listen options.
- */
-export const serverOptions = {
-  port,
-  host,
-} as const satisfies Config.Wrap<{
-  readonly port: number;
-  readonly host: string;
-}>;
+const apiBaseUrl = Config.schema(
+  EnvSchema.fields.VITE_API_BASE_URL,
+  "VITE_API_BASE_URL",
+).pipe(Config.withDefault(defaultApiBaseUrl));
 
 const envConfig = Config.all({
   nodeEnv,
   port,
-  host,
-  databaseUrl,
+  apiBaseUrl,
 });
 
 export class Env extends Context.Service<
@@ -63,10 +46,9 @@ export class Env extends Context.Service<
   {
     readonly nodeEnv: "development" | "production" | "test";
     readonly port: number;
-    readonly host: string;
-    readonly databaseUrl: string;
+    readonly apiBaseUrl: string;
   }
->()("@acme/Env") {
+>()("@acme/WebEnv") {
   static readonly config: Config.Config<Env["Service"]> = envConfig;
 
   /** Load env from `process.env` only. */

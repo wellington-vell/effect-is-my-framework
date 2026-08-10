@@ -1,9 +1,11 @@
 import "@/styles.css";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
-export const Route = createRootRoute({
+import type { AppRouterContext } from "@/lib/atoms/registry";
+
+export const Route = createRootRouteWithContext<AppRouterContext>()({
   component: RootComponent,
 });
 

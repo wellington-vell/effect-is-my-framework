@@ -12,4 +12,4 @@ export const HealthGroup = HttpApiGroup.make("healthCheck")
       success: HealthCheckOutput.pipe(HttpApiSchema.asText()),
     }),
   )
-  .prefix("/health/v1");
+  .prefix("/v1");

@@ -26,7 +26,11 @@ const DocsLayer = Layer.unwrap(
 );
 
 /** Route layers without HttpRouter.serve — use for in-process toWebHandler tests. */
-export const AppRoutesLayer = Layer.mergeAll(RoutesLayer, DocsLayer).pipe(
+export const AppRoutesLayer = Layer.mergeAll(
+  RoutesLayer,
+  DocsLayer,
+  HttpRouter.cors(),
+).pipe(
   Layer.provide(RpcSerialization.layerNdjson),
   Layer.provideMerge(HandlersLayer),
 );

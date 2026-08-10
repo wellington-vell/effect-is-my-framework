@@ -1,25 +1,24 @@
 import { assert, describe, it } from "@effect/vitest";
 import { ConfigProvider, Effect, Result } from "effect";
 
-import { Env, serverOptions } from "@acme/env/server";
+import { Env } from "@acme/env/web";
 
-describe("Env", () => {
+describe("WebEnv", () => {
   describe("config", () => {
-    it.effect("parses valid NODE_ENV, PORT, and HOST", () =>
+    it.effect("parses valid NODE_ENV, WEB_PORT, and VITE_API_BASE_URL", () =>
       Effect.gen(function* () {
         const provider = ConfigProvider.fromUnknown({
           NODE_ENV: "production",
-          PORT: "8080",
-          HOST: "localhost",
+          WEB_PORT: "4000",
+          VITE_API_BASE_URL: "http://localhost:8080",
         });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
           r,
           Result.succeed({
             nodeEnv: "production",
-            port: 8080,
-            host: "localhost",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            port: 4000,
+            apiBaseUrl: "http://localhost:8080",
           }),
         );
       }),
@@ -28,8 +27,8 @@ describe("Env", () => {
     it.effect("uses default NODE_ENV when missing", () =>
       Effect.gen(function* () {
         const provider = ConfigProvider.fromUnknown({
-          PORT: "3000",
-          HOST: "0.0.0.0",
+          WEB_PORT: "3000",
+          VITE_API_BASE_URL: "http://localhost:3001",
         });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
@@ -37,46 +36,42 @@ describe("Env", () => {
           Result.succeed({
             nodeEnv: "development",
             port: 3000,
-            host: "0.0.0.0",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            apiBaseUrl: "http://localhost:3001",
           }),
         );
       }),
     );
 
-    it.effect("uses default PORT when missing", () =>
+    it.effect("uses default WEB_PORT when missing", () =>
       Effect.gen(function* () {
         const provider = ConfigProvider.fromUnknown({
           NODE_ENV: "test",
-          HOST: "localhost",
         });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
           r,
           Result.succeed({
             nodeEnv: "test",
-            port: 3001,
-            host: "localhost",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            port: 3000,
+            apiBaseUrl: "http://localhost:3001",
           }),
         );
       }),
     );
 
-    it.effect("uses default HOST when missing", () =>
+    it.effect("uses default VITE_API_BASE_URL when missing", () =>
       Effect.gen(function* () {
         const provider = ConfigProvider.fromUnknown({
           NODE_ENV: "development",
-          PORT: "4000",
+          WEB_PORT: "5173",
         });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
           r,
           Result.succeed({
             nodeEnv: "development",
-            port: 4000,
-            host: "0.0.0.0",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            port: 5173,
+            apiBaseUrl: "http://localhost:3001",
           }),
         );
       }),
@@ -90,9 +85,8 @@ describe("Env", () => {
           r,
           Result.succeed({
             nodeEnv: "development",
-            port: 3001,
-            host: "0.0.0.0",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            port: 3000,
+            apiBaseUrl: "http://localhost:3001",
           }),
         );
       }),
@@ -115,9 +109,9 @@ describe("Env", () => {
       }),
     );
 
-    it.effect("fails on non-numeric PORT", () =>
+    it.effect("fails on non-numeric WEB_PORT", () =>
       Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "abc" });
+        const provider = ConfigProvider.fromUnknown({ WEB_PORT: "abc" });
         const r = yield* Env.config.parse(provider).pipe(
           Effect.mapError((e) => e.cause.message),
           Effect.result,
@@ -126,15 +120,15 @@ describe("Env", () => {
           r,
           Result.fail(
             `Expected a string representing a finite number
-  at ["PORT"]`,
+  at ["WEB_PORT"]`,
           ),
         );
       }),
     );
 
-    it.effect("fails on PORT out of range (too high)", () =>
+    it.effect("fails on WEB_PORT out of range (too high)", () =>
       Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "99999" });
+        const provider = ConfigProvider.fromUnknown({ WEB_PORT: "99999" });
         const r = yield* Env.config.parse(provider).pipe(
           Effect.mapError((e) => e.cause.message),
           Effect.result,
@@ -143,15 +137,15 @@ describe("Env", () => {
           r,
           Result.fail(
             `Expected a value between 1 and 65535
-  at ["PORT"]`,
+  at ["WEB_PORT"]`,
           ),
         );
       }),
     );
 
-    it.effect("fails on negative PORT", () =>
+    it.effect("fails on WEB_PORT zero", () =>
       Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "-1" });
+        const provider = ConfigProvider.fromUnknown({ WEB_PORT: "0" });
         const r = yield* Env.config.parse(provider).pipe(
           Effect.mapError((e) => e.cause.message),
           Effect.result,
@@ -160,74 +154,38 @@ describe("Env", () => {
           r,
           Result.fail(
             `Expected a value between 1 and 65535
-  at ["PORT"]`,
+  at ["WEB_PORT"]`,
           ),
         );
       }),
     );
 
-    it.effect("fails on PORT zero", () =>
+    it.effect("accepts WEB_PORT at boundary (1)", () =>
       Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "0" });
-        const r = yield* Env.config.parse(provider).pipe(
-          Effect.mapError((e) => e.cause.message),
-          Effect.result,
-        );
-        assert.deepStrictEqual(
-          r,
-          Result.fail(
-            `Expected a value between 1 and 65535
-  at ["PORT"]`,
-          ),
-        );
-      }),
-    );
-
-    it.effect("accepts PORT at boundary (1)", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "1" });
+        const provider = ConfigProvider.fromUnknown({ WEB_PORT: "1" });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
           r,
           Result.succeed({
             nodeEnv: "development",
             port: 1,
-            host: "0.0.0.0",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            apiBaseUrl: "http://localhost:3001",
           }),
         );
       }),
     );
 
-    it.effect("accepts PORT at boundary (65535)", () =>
+    it.effect("accepts WEB_PORT at boundary (65535)", () =>
       Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "65535" });
+        const provider = ConfigProvider.fromUnknown({ WEB_PORT: "65535" });
         const r = yield* Env.config.parse(provider).pipe(Effect.result);
         assert.deepStrictEqual(
           r,
           Result.succeed({
             nodeEnv: "development",
             port: 65535,
-            host: "0.0.0.0",
-            databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            apiBaseUrl: "http://localhost:3001",
           }),
-        );
-      }),
-    );
-
-    it.effect("fails on float PORT", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "3000.5" });
-        const r = yield* Env.config.parse(provider).pipe(
-          Effect.mapError((e) => e.cause.message),
-          Effect.result,
-        );
-        assert.deepStrictEqual(
-          r,
-          Result.fail(
-            `Expected an integer
-  at ["PORT"]`,
-          ),
         );
       }),
     );
@@ -238,17 +196,16 @@ describe("Env", () => {
       Effect.gen(function* () {
         const provider = ConfigProvider.fromUnknown({
           NODE_ENV: "production",
-          PORT: "8080",
-          HOST: "localhost",
+          WEB_PORT: "4000",
+          VITE_API_BASE_URL: "https://api.example.com",
         });
         const result = yield* Env.config.pipe(
           Effect.provide(ConfigProvider.layer(provider)),
         );
         assert.deepStrictEqual(result, {
           nodeEnv: "production",
-          port: 8080,
-          host: "localhost",
-          databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+          port: 4000,
+          apiBaseUrl: "https://api.example.com",
         });
       }),
     );
@@ -261,44 +218,9 @@ describe("Env", () => {
         );
         assert.deepStrictEqual(result, {
           nodeEnv: "development",
-          port: 3001,
-          host: "0.0.0.0",
-          databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+          port: 3000,
+          apiBaseUrl: "http://localhost:3001",
         });
-      }),
-    );
-  });
-
-  describe("serverOptions", () => {
-    it.effect("has port config", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ PORT: "4000" });
-        const r = yield* serverOptions.port.parse(provider).pipe(Effect.result);
-        assert.deepStrictEqual(r, Result.succeed(4000));
-      }),
-    );
-
-    it.effect("has host config", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({ HOST: "127.0.0.1" });
-        const r = yield* serverOptions.host.parse(provider).pipe(Effect.result);
-        assert.deepStrictEqual(r, Result.succeed("127.0.0.1"));
-      }),
-    );
-
-    it.effect("port uses default when missing", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({});
-        const r = yield* serverOptions.port.parse(provider).pipe(Effect.result);
-        assert.deepStrictEqual(r, Result.succeed(3001));
-      }),
-    );
-
-    it.effect("host uses default when missing", () =>
-      Effect.gen(function* () {
-        const provider = ConfigProvider.fromUnknown({});
-        const r = yield* serverOptions.host.parse(provider).pipe(Effect.result);
-        assert.deepStrictEqual(r, Result.succeed("0.0.0.0"));
       }),
     );
   });
