@@ -1,12 +1,17 @@
 import { Schema } from "effect";
-import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
+import {
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiSchema,
+} from "effect/unstable/httpapi";
 
 import {
   CreateTodoPayload,
   ListTodosOutput,
   TodoSchema,
   UpdateTodoPayload,
-} from "@acme/api/rpc/procedures/todos";
+} from "@acme/api/contracts/rpc/todos";
+import { TodoNotFound } from "@acme/api/domain/todo-errors";
 
 export const TodosGroup = HttpApiGroup.make("todos")
   .add(
@@ -21,9 +26,12 @@ export const TodosGroup = HttpApiGroup.make("todos")
       params: { id: Schema.Number },
       payload: UpdateTodoPayload,
       success: TodoSchema,
+      error: TodoNotFound.pipe(HttpApiSchema.status(404)),
     }),
     HttpApiEndpoint.delete("delete", "/todos/:id", {
       params: { id: Schema.Number },
+      success: Schema.Void,
+      error: TodoNotFound.pipe(HttpApiSchema.status(404)),
     }),
   )
   .prefix("/v1");

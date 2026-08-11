@@ -1,6 +1,8 @@
 import { Schema } from "effect";
 import { Rpc, RpcGroup } from "effect/unstable/rpc";
 
+import { TodoError } from "@acme/api/domain/todo-errors";
+
 export const TodoSchema = Schema.Struct({
   id: Schema.Number,
   title: Schema.String,
@@ -41,11 +43,13 @@ export class UpdateTodo extends Rpc.make("todos/v1/update", {
     completed: Schema.optionalKey(Schema.Boolean),
   }),
   success: TodoSchema,
+  error: TodoError,
 }) {}
 
 export class DeleteTodo extends Rpc.make("todos/v1/delete", {
   payload: TodoIdParams,
   success: Schema.Void,
+  error: TodoError,
 }) {}
 
 export class TodosRpc extends RpcGroup.make(

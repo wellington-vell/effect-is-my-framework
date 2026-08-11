@@ -4,7 +4,7 @@ import {
   HttpApiSchema,
 } from "effect/unstable/httpapi";
 
-import { HealthCheckOutput } from "@acme/api/rpc/procedures/health";
+import { HealthCheckOutput } from "@acme/api/contracts/rpc/health";
 
 export const HealthGroup = HttpApiGroup.make("healthCheck")
   .add(

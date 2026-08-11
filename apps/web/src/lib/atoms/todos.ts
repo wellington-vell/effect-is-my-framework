@@ -1,7 +1,20 @@
+import { Option } from "effect";
 import { TodosClient } from "@/lib/atoms/rpc";
 import { withToast } from "@/lib/atoms/with-toast";
 
 const todosReactivityKey = ["todos"] as const;
+
+const todoNotFoundMessage = (error: Option.Option<unknown>) =>
+  Option.match(error, {
+    onNone: () => "Something went wrong",
+    onSome: (e) =>
+      typeof e === "object" &&
+      e !== null &&
+      "_tag" in e &&
+      e._tag === "TodoNotFound"
+        ? "Todo not found"
+        : "Something went wrong",
+  });
 
 export const todosListAtom = TodosClient.query("todos/v1/list", void 0, {
   reactivityKeys: todosReactivityKey,
@@ -23,7 +36,7 @@ export const updateTodoFn = TodosClient.runtime.fn(
     readonly completed?: boolean;
   }) =>
     TodosClient.use((client) => client("todos/v1/update", payload)).pipe(
-      withToast(),
+      withToast({ onFailure: todoNotFoundMessage }),
     ),
   { reactivityKeys: todosReactivityKey },
 );
@@ -31,7 +44,7 @@ export const updateTodoFn = TodosClient.runtime.fn(
 export const deleteTodoFn = TodosClient.runtime.fn(
   (payload: { readonly id: number }) =>
     TodosClient.use((client) => client("todos/v1/delete", payload)).pipe(
-      withToast(),
+      withToast({ onFailure: todoNotFoundMessage }),
     ),
   { reactivityKeys: todosReactivityKey },
 );

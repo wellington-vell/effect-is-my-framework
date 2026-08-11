@@ -1,9 +1,9 @@
 import { assert, describe, it } from "@effect/vitest";
-import { Effect, Layer } from "effect";
+import { Cause, Effect, Exit, Layer } from "effect";
 import { RpcTest } from "effect/unstable/rpc";
 
-import { create, list, remove, update } from "@acme/api/handlers/todos";
-import { TodosRpc } from "@acme/api/rpc/procedures/todos";
+import { TodosRpc } from "@acme/api/contracts/rpc/todos";
+import { TodosRpcLive } from "@acme/api/server/todos/rpc";
 import { Database } from "@acme/db/database";
 import type { Todo } from "@acme/db/schema/todos";
 
@@ -39,7 +39,8 @@ const where = () => ({ returning: updateReturning });
 const set = () => ({ where });
 const updateFn = () => ({ set });
 
-const deleteWhere = () => Effect.succeed(undefined);
+const deleteReturning = () => Effect.succeed([sampleTodo]);
+const deleteWhere = () => ({ returning: deleteReturning });
 const deleteFn = () => ({ where: deleteWhere });
 
 const MockDatabase = Layer.succeed(
@@ -53,45 +54,7 @@ const MockDatabase = Layer.succeed(
   } as unknown as Database["Service"],
 );
 
-describe("todos handlers", () => {
-  it.effect("list returns todos from Database", () =>
-    list.pipe(
-      Effect.map((result) => {
-        assert.deepStrictEqual(result, { todos: [sampleTodo] });
-      }),
-      Effect.provide(MockDatabase),
-    ),
-  );
-
-  it.effect("create inserts and returns todo", () =>
-    create({ title: "created" }).pipe(
-      Effect.map((result) => {
-        assert.strictEqual(result.title, "created");
-        assert.strictEqual(result.id, 1);
-      }),
-      Effect.provide(MockDatabase),
-    ),
-  );
-
-  it.effect("update updates and returns todo", () =>
-    update(1, { completed: true }).pipe(
-      Effect.map((result) => {
-        assert.strictEqual(result.completed, true);
-        assert.strictEqual(result.id, 1);
-      }),
-      Effect.provide(MockDatabase),
-    ),
-  );
-
-  it.effect("remove deletes todo", () =>
-    remove(1).pipe(
-      Effect.map(() => {
-        assert.ok(true);
-      }),
-      Effect.provide(MockDatabase),
-    ),
-  );
-
+describe("todos server", () => {
   it.effect("RpcTest list, create, update, and delete", () =>
     Effect.gen(function* () {
       const client = yield* RpcTest.makeClient(TodosRpc);
@@ -110,15 +73,43 @@ describe("todos handlers", () => {
       yield* client["todos/v1/delete"]({ id: 1 });
     }).pipe(
       Effect.scoped,
-      Effect.provide(
-        TodosRpc.toLayer({
-          "todos/v1/list": () => list,
-          "todos/v1/create": (payload) => create(payload),
-          "todos/v1/update": ({ id, ...payload }) => update(id, payload),
-          "todos/v1/delete": ({ id }) => remove(id),
-        }),
-      ),
+      Effect.provide(TodosRpcLive),
       Effect.provide(MockDatabase),
+    ),
+  );
+
+  it.effect("update returns TodoError for missing id", () =>
+    Effect.gen(function* () {
+      const client = yield* RpcTest.makeClient(TodosRpc);
+      const exit = yield* Effect.exit(
+        client["todos/v1/update"]({ id: 999, completed: true }),
+      );
+      assert.isTrue(Exit.isFailure(exit));
+      if (Exit.isFailure(exit)) {
+        const error = Cause.findErrorOption(exit.cause);
+        assert.isTrue(error._tag === "Some");
+        if (error._tag === "Some") {
+          assert.strictEqual(error.value._tag, "TodoError");
+        }
+      }
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        TodosRpcLive.pipe(
+          Layer.provide(
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- partial drizzle mock for unit tests
+            Layer.succeed(Database, {
+              update: () => ({
+                set: () => ({
+                  where: () => ({
+                    returning: () => Effect.succeed([]),
+                  }),
+                }),
+              }),
+            } as unknown as Database["Service"]),
+          ),
+        ),
+      ),
     ),
   );
 });

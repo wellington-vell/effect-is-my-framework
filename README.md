@@ -67,7 +67,7 @@ bun run db-migrate
 bun run dev
 ```
 
-The server starts at `http://localhost:3000` and the web app at `http://localhost:5173`.
+The server starts at `http://localhost:3101` and the web app at `http://localhost:3100`.
 
 ### Database Commands
 
@@ -131,11 +131,12 @@ Copy `.env.example` to `.env` and configure:
 
 ```bash
 NODE_ENV=development
-PORT=3000
+PORT=3101
 HOST=0.0.0.0
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/acme
-WEB_PORT=5173
-VITE_API_BASE_URL=http://localhost:3000
+WEB_PORT=3100
+VITE_API_BASE_URL=http://localhost:3101
+CORS_ORIGINS=http://localhost:3100
 ```
 
 ## License

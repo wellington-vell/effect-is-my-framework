@@ -3,9 +3,9 @@ import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiScalar } from "effect/unstable/httpapi";
 import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
 
-import { HandlersLayer } from "@acme/api/handlers";
-import { AppApi } from "@acme/api/http/api";
-import { AppRpcs } from "@acme/api/rpc/procedures";
+import { AppApi } from "@acme/api/contracts/http/api";
+import { AppRpcs } from "@acme/api/contracts/rpc/index";
+import { HandlersLayer } from "@acme/api/server/index";
 import { Env } from "@acme/env/server";
 
 const RoutesLayer = Layer.mergeAll(

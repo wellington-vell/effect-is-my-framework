@@ -1,7 +1,7 @@
 import { assert, describe, it } from "@effect/vitest";
 import { Effect } from "effect";
 
-import { healthCheck } from "@acme/api/handlers/health";
+import { healthCheck } from "@acme/api/domain/health";
 
 describe("healthCheck", () => {
   it.effect("returns OK", () =>
