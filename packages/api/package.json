@@ -13,7 +13,6 @@
   "dependencies": {
     "@acme/db": "workspace:*",
     "@acme/env": "workspace:*",
-    "@effect/platform-node": "catalog:",
     "effect": "catalog:"
   },
   "devDependencies": {

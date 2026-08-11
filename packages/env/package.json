@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./config": "./src/config.ts",
     "./server": "./src/server.ts",
     "./web": "./src/web.ts"
   },

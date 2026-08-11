@@ -25,14 +25,14 @@ export const withToast =
     const onFailure = options.onFailure ?? defaults.onFailure;
 
     const toastId = toast.loading(
-      typeof onWaiting === "string" ? onWaiting : onWaiting(...args),
+      typeof onWaiting === "function" ? onWaiting(...args) : onWaiting,
     );
 
     return self.pipe(
       Effect.tap((a) =>
         Effect.sync(() => {
           toast.success(
-            typeof onSuccess === "string" ? onSuccess : onSuccess(a, ...args),
+            typeof onSuccess === "function" ? onSuccess(a, ...args) : onSuccess,
             { id: toastId },
           );
         }),
@@ -40,9 +40,9 @@ export const withToast =
       Effect.tapCause((cause) =>
         Effect.sync(() => {
           toast.error(
-            typeof onFailure === "string"
-              ? onFailure
-              : onFailure(Cause.findErrorOption(cause), ...args),
+            typeof onFailure === "function"
+              ? onFailure(Cause.findErrorOption(cause), ...args)
+              : onFailure,
             { id: toastId },
           );
         }),

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Effect } from "effect";
 import { AsyncResult, AtomRegistry } from "effect/unstable/reactivity";
 import { useState } from "react";
+import { TodoItem } from "@/components/todo-item";
 import {
   createTodoFn,
   deleteTodoFn,
@@ -67,39 +68,12 @@ function TodoApp() {
       ) : (
         <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
           {value.todos.map((todo) => (
-            <li
+            <TodoItem
               key={todo.id}
-              className="flex items-center gap-3 bg-card px-4 py-3"
-            >
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() =>
-                  updateTodo({
-                    id: todo.id,
-                    completed: !todo.completed,
-                  })
-                }
-                className="size-4 accent-primary"
-                aria-label={`Mark "${todo.title}" as ${todo.completed ? "incomplete" : "complete"}`}
-              />
-              <span
-                className={
-                  todo.completed
-                    ? "flex-1 text-sm text-muted-foreground line-through"
-                    : "flex-1 text-sm"
-                }
-              >
-                {todo.title}
-              </span>
-              <button
-                type="button"
-                onClick={() => deleteTodo({ id: todo.id })}
-                className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
-              >
-                Delete
-              </button>
-            </li>
+              todo={todo}
+              onToggle={(id, completed) => updateTodo({ id, completed })}
+              onDelete={(id) => deleteTodo({ id })}
+            />
           ))}
         </ul>
       )}

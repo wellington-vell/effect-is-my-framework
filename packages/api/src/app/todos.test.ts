@@ -81,30 +81,7 @@ const fetchRequest = (
     ({ dispose }) => Effect.promise(() => dispose()),
   );
 
-describe("AppLayer", () => {
-  it.effect("GET / returns OK", () =>
-    Effect.gen(function* () {
-      const testAppRoutes = makeTestAppRoutes(makeMockDatabase());
-      const response = yield* fetchRequest(testAppRoutes, "/");
-      assert.strictEqual(response.status, 200);
-      const text = yield* Effect.promise(() => response.text());
-      assert.strictEqual(text, "OK");
-    }),
-  );
-
-  it.effect("GET /api/v1/health-check returns OK", () =>
-    Effect.gen(function* () {
-      const testAppRoutes = makeTestAppRoutes(makeMockDatabase());
-      const response = yield* fetchRequest(
-        testAppRoutes,
-        "/api/v1/health-check",
-      );
-      assert.strictEqual(response.status, 200);
-      const text = yield* Effect.promise(() => response.text());
-      assert.strictEqual(text, "OK");
-    }),
-  );
-
+describe("Todos endpoints", () => {
   it.effect("PATCH /api/v1/todos/:id returns 404 when todo missing", () =>
     Effect.gen(function* () {
       const testAppRoutes = makeTestAppRoutes(

@@ -4,16 +4,17 @@ import { withToast } from "@/lib/atoms/with-toast";
 
 const todosReactivityKey = ["todos"] as const;
 
-const todoNotFoundMessage = (error: Option.Option<unknown>) =>
+export const isTodoNotFound = (error: unknown): boolean =>
+  typeof error === "object" &&
+  error !== null &&
+  "_tag" in error &&
+  error._tag === "TodoNotFound";
+
+export const todoNotFoundMessage = (error: Option.Option<unknown>) =>
   Option.match(error, {
     onNone: () => "Something went wrong",
     onSome: (e) =>
-      typeof e === "object" &&
-      e !== null &&
-      "_tag" in e &&
-      e._tag === "TodoNotFound"
-        ? "Todo not found"
-        : "Something went wrong",
+      isTodoNotFound(e) ? "Todo not found" : "Something went wrong",
   });
 
 export const todosListAtom = TodosClient.query("todos/v1/list", void 0, {

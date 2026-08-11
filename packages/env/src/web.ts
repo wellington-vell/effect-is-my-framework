@@ -1,39 +1,16 @@
-import { NodeFileSystem } from "@effect/platform-node";
-import {
-  Config,
-  ConfigProvider,
-  Context,
-  Effect,
-  Layer,
-  Schema,
-  type PlatformError,
-} from "effect";
-import { fileURLToPath } from "node:url";
+import { Config, Context, Layer, Schema, type PlatformError } from "effect";
 
-const defaultDotEnvPath = fileURLToPath(
-  new URL("../../../.env", import.meta.url),
-);
+import { createLayerWithDotEnv, nodeEnv } from "@acme/env/config";
 
 const defaultApiBaseUrl = "http://localhost:3001";
 
-const EnvSchema = Schema.Struct({
-  NODE_ENV: Schema.Literals(["development", "production", "test"]),
-  WEB_PORT: Config.Port,
-  VITE_API_BASE_URL: Schema.String,
-});
-
-const nodeEnv = Config.schema(EnvSchema.fields.NODE_ENV, "NODE_ENV").pipe(
-  Config.withDefault("development" as const),
-);
-
-const port = Config.schema(EnvSchema.fields.WEB_PORT, "WEB_PORT").pipe(
+const port = Config.schema(Config.Port, "WEB_PORT").pipe(
   Config.withDefault(3000),
 );
 
-const apiBaseUrl = Config.schema(
-  EnvSchema.fields.VITE_API_BASE_URL,
-  "VITE_API_BASE_URL",
-).pipe(Config.withDefault(defaultApiBaseUrl));
+const apiBaseUrl = Config.schema(Schema.String, "VITE_API_BASE_URL").pipe(
+  Config.withDefault(defaultApiBaseUrl),
+);
 
 const envConfig = Config.all({
   nodeEnv,
@@ -64,22 +41,6 @@ export class Env extends Context.Service<
   static layerWithDotEnv(options?: {
     readonly dotEnvPath?: string;
   }): Layer.Layer<Env, Config.ConfigError | PlatformError.PlatformError> {
-    const path = options?.dotEnvPath ?? defaultDotEnvPath;
-
-    const dotEnvProvider = ConfigProvider.fromDotEnv({ path }).pipe(
-      Effect.catchIf(
-        (error): error is PlatformError.PlatformError =>
-          error._tag === "PlatformError" && error.reason._tag === "NotFound",
-        () => Effect.succeed(ConfigProvider.fromUnknown({})),
-      ),
-    );
-
-    return Env.layer.pipe(
-      Layer.provideMerge(
-        ConfigProvider.layerAdd(dotEnvProvider).pipe(
-          Layer.provide(NodeFileSystem.layer),
-        ),
-      ),
-    );
+    return createLayerWithDotEnv(Env.layer, options);
   }
 }

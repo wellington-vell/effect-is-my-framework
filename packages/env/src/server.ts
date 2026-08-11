@@ -1,50 +1,22 @@
-import { NodeFileSystem } from "@effect/platform-node";
-import {
-  Config,
-  ConfigProvider,
-  Context,
-  Effect,
-  Layer,
-  Schema,
-  type PlatformError,
-} from "effect";
-import { fileURLToPath } from "node:url";
+import { Config, Context, Layer, Schema, type PlatformError } from "effect";
 
-const defaultDotEnvPath = fileURLToPath(
-  new URL("../../../.env", import.meta.url),
-);
+import { createLayerWithDotEnv, nodeEnv } from "@acme/env/config";
 
 const defaultDatabaseUrl = "postgresql://postgres:postgres@localhost:5432/acme";
 
-const EnvSchema = Schema.Struct({
-  NODE_ENV: Schema.Literals(["development", "production", "test"]),
-  PORT: Config.Port,
-  HOST: Schema.String,
-  DATABASE_URL: Schema.String,
-  CORS_ORIGINS: Schema.String,
-});
+const port = Config.schema(Config.Port, "PORT").pipe(Config.withDefault(3001));
 
-const nodeEnv = Config.schema(EnvSchema.fields.NODE_ENV, "NODE_ENV").pipe(
-  Config.withDefault("development" as const),
-);
-
-const port = Config.schema(EnvSchema.fields.PORT, "PORT").pipe(
-  Config.withDefault(3001),
-);
-
-const host = Config.schema(EnvSchema.fields.HOST, "HOST").pipe(
+const host = Config.schema(Schema.String, "HOST").pipe(
   Config.withDefault("0.0.0.0"),
 );
 
-const databaseUrl = Config.schema(
-  EnvSchema.fields.DATABASE_URL,
-  "DATABASE_URL",
-).pipe(Config.withDefault(defaultDatabaseUrl));
+const databaseUrl = Config.schema(Schema.String, "DATABASE_URL").pipe(
+  Config.withDefault(defaultDatabaseUrl),
+);
 
-const corsOrigins = Config.schema(
-  EnvSchema.fields.CORS_ORIGINS,
-  "CORS_ORIGINS",
-).pipe(Config.withDefault("http://localhost:3000"));
+const corsOrigins = Config.schema(Schema.String, "CORS_ORIGINS").pipe(
+  Config.withDefault("http://localhost:3000"),
+);
 
 const parsedCorsOrigins = Config.map(corsOrigins, (origins) =>
   origins
@@ -97,22 +69,6 @@ export class Env extends Context.Service<
   static layerWithDotEnv(options?: {
     readonly dotEnvPath?: string;
   }): Layer.Layer<Env, Config.ConfigError | PlatformError.PlatformError> {
-    const path = options?.dotEnvPath ?? defaultDotEnvPath;
-
-    const dotEnvProvider = ConfigProvider.fromDotEnv({ path }).pipe(
-      Effect.catchIf(
-        (error): error is PlatformError.PlatformError =>
-          error._tag === "PlatformError" && error.reason._tag === "NotFound",
-        () => Effect.succeed(ConfigProvider.fromUnknown({})),
-      ),
-    );
-
-    return Env.layer.pipe(
-      Layer.provideMerge(
-        ConfigProvider.layerAdd(dotEnvProvider).pipe(
-          Layer.provide(NodeFileSystem.layer),
-        ),
-      ),
-    );
+    return createLayerWithDotEnv(Env.layer, options);
   }
 }
