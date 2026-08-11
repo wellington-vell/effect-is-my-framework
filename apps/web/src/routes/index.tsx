@@ -1,7 +1,7 @@
-import { useAtom, useAtomSuspense } from "@effect/atom-react";
+import { useAtomSet, useAtomValue } from "@effect/atom-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Effect } from "effect";
-import { AtomRegistry } from "effect/unstable/reactivity";
+import { AsyncResult, AtomRegistry } from "effect/unstable/reactivity";
 import { useState } from "react";
 import {
   createTodoFn,
@@ -17,10 +17,12 @@ export const Route = createFileRoute("/")({
 });
 
 function TodoApp() {
-  const { value } = useAtomSuspense(todosListAtom);
-  const [, createTodo] = useAtom(createTodoFn);
-  const [, updateTodo] = useAtom(updateTodoFn);
-  const [, deleteTodo] = useAtom(deleteTodoFn);
+  const loaderData = Route.useLoaderData();
+  const result = useAtomValue(todosListAtom);
+  const value = AsyncResult.isSuccess(result) ? result.value : loaderData;
+  const createTodo = useAtomSet(createTodoFn);
+  const updateTodo = useAtomSet(updateTodoFn);
+  const deleteTodo = useAtomSet(deleteTodoFn);
   const [title, setTitle] = useState("");
 
   const onSubmit = (event: { preventDefault: () => void }) => {

@@ -5,7 +5,7 @@ import { RpcTest } from "effect/unstable/rpc";
 import { create, list, remove, update } from "@acme/api/handlers/todos";
 import { TodosRpc } from "@acme/api/rpc/procedures/todos";
 import { Database } from "@acme/db/database";
-import type { Todo } from "@acme/db/schema/index";
+import type { Todo } from "@acme/db/schema/todos";
 
 const sampleTodo: Todo = {
   id: 1,

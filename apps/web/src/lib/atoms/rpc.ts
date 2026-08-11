@@ -1,7 +1,9 @@
 import { Layer } from "effect";
 import { FetchHttpClient } from "effect/unstable/http";
-import { Atom } from "effect/unstable/reactivity";
+import { AtomRpc } from "effect/unstable/reactivity";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+
+import { TodosRpc } from "@acme/api/rpc/procedures/todos";
 
 const rpcUrl = new URL(
   "/rpc",
@@ -13,4 +15,7 @@ const RpcLayer = RpcClient.layerProtocolHttp({ url: rpcUrl }).pipe(
   Layer.provide(FetchHttpClient.layer),
 );
 
-export const rpcRuntime = Atom.runtime(RpcLayer);
+export const TodosClient = AtomRpc.Service()("@acme/TodosClient", {
+  group: TodosRpc,
+  protocol: RpcLayer,
+});

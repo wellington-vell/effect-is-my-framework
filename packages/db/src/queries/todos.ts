@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { Effect } from "effect";
 
 import { Database } from "@acme/db/database";
-import { todos, type NewTodo } from "@acme/db/schema/index";
+import { type NewTodo, todos } from "@acme/db/schema/todos";
 
 export const listTodos = Effect.gen(function* () {
   const db = yield* Database;

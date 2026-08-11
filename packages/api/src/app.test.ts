@@ -55,9 +55,9 @@ describe("AppLayer", () => {
     }),
   );
 
-  it.effect("GET /api/health/v1/health-check returns OK", () =>
+  it.effect("GET /api/v1/health-check returns OK", () =>
     Effect.gen(function* () {
-      const response = yield* fetchPath("/api/health/v1/health-check");
+      const response = yield* fetchPath("/api/v1/health-check");
       assert.strictEqual(response.status, 200);
       const text = yield* Effect.promise(() => response.text());
       assert.strictEqual(text, "OK");
