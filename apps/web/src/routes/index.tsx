@@ -39,7 +39,7 @@ function TodoApp() {
         <h1 className="font-display text-3xl font-bold tracking-tight">
           Todos
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           Create, complete, and delete todos via Effect Atom.
         </p>
       </header>
@@ -50,26 +50,26 @@ function TodoApp() {
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder="What needs doing?"
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex-1 rounded-md border px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
         <button
           type="submit"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           Add
         </button>
       </form>
 
       {value.todos.length === 0 ? (
-        <p className="text-muted-foreground rounded-lg border border-dashed px-4 py-8 text-center text-sm">
+        <p className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
           No todos yet. Add one above.
         </p>
       ) : (
-        <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+        <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
           {value.todos.map((todo) => (
             <li
               key={todo.id}
-              className="bg-card flex items-center gap-3 px-4 py-3"
+              className="flex items-center gap-3 bg-card px-4 py-3"
             >
               <input
                 type="checkbox"
@@ -80,13 +80,13 @@ function TodoApp() {
                     completed: !todo.completed,
                   })
                 }
-                className="accent-primary size-4"
+                className="size-4 accent-primary"
                 aria-label={`Mark "${todo.title}" as ${todo.completed ? "incomplete" : "complete"}`}
               />
               <span
                 className={
                   todo.completed
-                    ? "text-muted-foreground flex-1 text-sm line-through"
+                    ? "flex-1 text-sm text-muted-foreground line-through"
                     : "flex-1 text-sm"
                 }
               >
@@ -95,7 +95,7 @@ function TodoApp() {
               <button
                 type="button"
                 onClick={() => deleteTodo({ id: todo.id })}
-                className="text-destructive hover:bg-destructive/10 rounded px-2 py-1 text-xs font-medium transition-colors"
+                className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
               >
                 Delete
               </button>

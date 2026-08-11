@@ -21,6 +21,7 @@ const EnvSchema = Schema.Struct({
   PORT: Config.Port,
   HOST: Schema.String,
   DATABASE_URL: Schema.String,
+  CORS_ORIGINS: Schema.String,
 });
 
 const nodeEnv = Config.schema(EnvSchema.fields.NODE_ENV, "NODE_ENV").pipe(
@@ -40,6 +41,18 @@ const databaseUrl = Config.schema(
   "DATABASE_URL",
 ).pipe(Config.withDefault(defaultDatabaseUrl));
 
+const corsOrigins = Config.schema(
+  EnvSchema.fields.CORS_ORIGINS,
+  "CORS_ORIGINS",
+).pipe(Config.withDefault("http://localhost:3000"));
+
+const parsedCorsOrigins = Config.map(corsOrigins, (origins) =>
+  origins
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
+);
+
 /**
  * Config fragment for `NodeHttpServer.layerConfig` listen options.
  */
@@ -56,6 +69,7 @@ const envConfig = Config.all({
   port,
   host,
   databaseUrl,
+  corsOrigins: parsedCorsOrigins,
 });
 
 export class Env extends Context.Service<
@@ -65,6 +79,7 @@ export class Env extends Context.Service<
     readonly port: number;
     readonly host: string;
     readonly databaseUrl: string;
+    readonly corsOrigins: ReadonlyArray<string>;
   }
 >()("@acme/Env") {
   static readonly config: Config.Config<Env["Service"]> = envConfig;

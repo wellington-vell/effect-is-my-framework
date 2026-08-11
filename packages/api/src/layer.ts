@@ -29,7 +29,18 @@ const DocsLayer = Layer.unwrap(
 export const AppRoutesLayer = Layer.mergeAll(
   RoutesLayer,
   DocsLayer,
-  HttpRouter.cors(),
+  Layer.unwrap(
+    Effect.gen(function* () {
+      const { corsOrigins } = yield* Env;
+      return HttpRouter.cors({
+        allowedOrigins: corsOrigins,
+        allowedMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
+        credentials: true,
+        maxAge: 600,
+      });
+    }),
+  ),
 ).pipe(
   Layer.provide(RpcSerialization.layerNdjson),
   Layer.provideMerge(HandlersLayer),

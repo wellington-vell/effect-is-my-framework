@@ -6,20 +6,20 @@ The sample feature is a **Todos CRUD** application.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Runtime / Package Manager | [Bun](https://bun.sh) (>=1.3.10) |
-| Language | TypeScript 7.0.2 + `@effect/tsgo` |
-| Core Framework | [Effect](https://effect.website) v4.0.0-beta.107 |
-| Monorepo | [Turborepo](https://turbo.build) |
-| Database | PostgreSQL 18 via [Drizzle ORM](https://orm.drizzle.team) + `@effect/sql-pg` |
-| API | Effect `HttpApi` (REST) + Effect `Rpc` (RPC over HTTP) |
-| Frontend | React 19, [TanStack Router](https://tanstack.com/router), Vite 8 |
-| Styling | [Tailwind CSS](https://tailwindcss.com) 4.1 |
-| Reactive State | `@effect/atom-react` |
-| Linting | [oxlint](https://oxc-project.github.io) (type-aware) |
-| Formatting | [oxfmt](https://oxc-project.github.io) |
-| Testing | [Vitest](https://vitest.dev) 4.1 + `@effect/vitest` |
+| Layer                     | Technology                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| Runtime / Package Manager | [Bun](https://bun.sh) (>=1.3.10)                                             |
+| Language                  | TypeScript 7.0.2 + `@effect/tsgo`                                            |
+| Core Framework            | [Effect](https://effect.website) v4.0.0-beta.107                             |
+| Monorepo                  | [Turborepo](https://turbo.build)                                             |
+| Database                  | PostgreSQL 18 via [Drizzle ORM](https://orm.drizzle.team) + `@effect/sql-pg` |
+| API                       | Effect `HttpApi` (REST) + Effect `Rpc` (RPC over HTTP)                       |
+| Frontend                  | React 19, [TanStack Router](https://tanstack.com/router), Vite 8             |
+| Styling                   | [Tailwind CSS](https://tailwindcss.com) 4.1                                  |
+| Reactive State            | `@effect/atom-react`                                                         |
+| Linting                   | [oxlint](https://oxc-project.github.io) (type-aware)                         |
+| Formatting                | [oxfmt](https://oxc-project.github.io)                                       |
+| Testing                   | [Vitest](https://vitest.dev) 4.1 + `@effect/vitest`                          |
 
 ## Project Structure
 

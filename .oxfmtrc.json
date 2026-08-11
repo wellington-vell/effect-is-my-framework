@@ -11,6 +11,8 @@
       }
     ],
     "groups": [
+      "side_effect",
+      { "newlinesBetween": true },
       ["value-builtin", "value-external"],
       ["value-internal", "value-parent", "value-sibling", "value-index"],
       { "newlinesBetween": true },
@@ -19,7 +21,7 @@
     ]
   },
   "sortTailwindcss": {
-    "stylesheet": "./apps/web/src/index.css",
+    "stylesheet": "./apps/web/src/styles.css",
     "functions": ["clsx", "cn"],
     "preserveWhitespace": false
   },

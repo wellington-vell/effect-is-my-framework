@@ -11,6 +11,7 @@ const TestEnv = Layer.succeed(Env, {
   port: 3000,
   host: "0.0.0.0",
   databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+  corsOrigins: ["http://localhost:3000"],
 });
 
 /** Stub Database so AppRoutesLayer can build without a live Postgres. */

@@ -20,6 +20,7 @@ describe("Env", () => {
             port: 8080,
             host: "localhost",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -39,6 +40,7 @@ describe("Env", () => {
             port: 3000,
             host: "0.0.0.0",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -58,6 +60,7 @@ describe("Env", () => {
             port: 3001,
             host: "localhost",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -77,6 +80,7 @@ describe("Env", () => {
             port: 4000,
             host: "0.0.0.0",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -93,6 +97,7 @@ describe("Env", () => {
             port: 3001,
             host: "0.0.0.0",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -194,6 +199,7 @@ describe("Env", () => {
             port: 1,
             host: "0.0.0.0",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -210,6 +216,7 @@ describe("Env", () => {
             port: 65535,
             host: "0.0.0.0",
             databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+            corsOrigins: ["http://localhost:3000"],
           }),
         );
       }),
@@ -249,6 +256,7 @@ describe("Env", () => {
           port: 8080,
           host: "localhost",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+          corsOrigins: ["http://localhost:3000"],
         });
       }),
     );
@@ -264,6 +272,7 @@ describe("Env", () => {
           port: 3001,
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
+          corsOrigins: ["http://localhost:3000"],
         });
       }),
     );
