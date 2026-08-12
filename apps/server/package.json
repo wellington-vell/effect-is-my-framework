@@ -5,21 +5,25 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "bun --watch run src/index.ts",
+    "seed": "bun run src/seed/script.ts",
     "start": "bun run src/index.ts",
     "test": "vitest run"
   },
   "dependencies": {
+    "@acme/auth": "workspace:*",
     "@acme/contracts": "workspace:*",
     "@acme/core": "workspace:*",
     "@acme/db": "workspace:*",
     "@acme/env": "workspace:*",
     "@effect/platform-node": "catalog:",
+    "drizzle-orm": "catalog:",
     "effect": "catalog:"
   },
   "devDependencies": {
     "@acme/shared": "workspace:*",
     "@effect/vitest": "catalog:",
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "vitest": "catalog:"
   }
 }

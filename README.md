@@ -14,6 +14,7 @@ The sample feature is a **Todos CRUD** application.
 | Monorepo                  | [Turborepo](https://turbo.build)                                             |
 | Database                  | PostgreSQL 18 via [Drizzle ORM](https://orm.drizzle.team) + `@effect/sql-pg` |
 | API                       | Effect `HttpApi` (REST) + Effect `Rpc` (RPC over HTTP)                       |
+| Auth                      | [Better Auth](https://www.better-auth.com) 1.6 (email/password)              |
 | Frontend                  | React 19, [TanStack Router](https://tanstack.com/router), Vite 8             |
 | Styling                   | [Tailwind CSS](https://tailwindcss.com) 4.1                                  |
 | Reactive State            | `@effect/atom-react`                                                         |
@@ -34,7 +35,7 @@ The sample feature is a **Todos CRUD** application.
 │   ├── core/            # Transport handlers
 │   ├── db/              # Database layer (Drizzle ORM + Effect)
 │   ├── env/             # Typed environment configuration
-│   └── auth/            # (placeholder)
+│   └── auth/            # Better Auth (email/password)
 └── repos/
     └── effect/          # Vendored Effect library (read-only reference)
 ```
@@ -65,6 +66,9 @@ bun run docker-dev
 # Run database migrations
 bun run db-migrate
 
+# Seed admin user + sample todos (dev only)
+bun run db-seed
+
 # Start all apps in dev mode
 bun run dev
 ```
@@ -77,6 +81,7 @@ The server starts at `http://localhost:3101` and the web app at `http://localhos
 bun run db-gen       # Generate migrations
 bun run db-migrate   # Run pending migrations
 bun run db-push      # Push schema to database
+bun run db-seed      # Seed admin user + sample todos (dev only)
 bun run db-studio    # Open Drizzle Studio
 ```
 
@@ -139,6 +144,8 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/acme
 WEB_PORT=3100
 VITE_API_BASE_URL=http://localhost:3101
 CORS_ORIGINS=http://localhost:3100
+BETTER_AUTH_SECRET=dev-only-change-me-min-32-chars!!
+BETTER_AUTH_URL=http://localhost:3101
 ```
 
 ## License

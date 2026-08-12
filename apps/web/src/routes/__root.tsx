@@ -6,10 +6,12 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 
+import type { AuthUser } from "@acme/shared/auth";
 import type { AtomRegistry as AtomRegistryService } from "effect/unstable/reactivity/AtomRegistry";
 
 type AppRouterContext = {
   readonly registry: AtomRegistryService;
+  readonly getSession: () => Promise<AuthUser | null>;
 };
 
 export const Route = createRootRouteWithContext<AppRouterContext>()({

@@ -1,9 +1,11 @@
 import { useAtomSet, useAtomValue } from "@effect/atom-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Effect } from "effect";
 import { AsyncResult, AtomRegistry } from "effect/unstable/reactivity";
 import { useState } from "react";
 import { TodoItem } from "@/components/todo-item";
+import { signOutFn } from "@/lib/atoms/auth";
+import { privateHealthAtom } from "@/lib/atoms/health";
 import {
   createTodoFn,
   deleteTodoFn,
@@ -11,13 +13,15 @@ import {
   updateTodoFn,
 } from "@/lib/atoms/todos";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/(auth)/")({
   loader: ({ context: { registry } }) =>
     Effect.runPromise(AtomRegistry.getResult(registry, todosListAtom)),
   component: TodoApp,
 });
 
 function TodoApp() {
+  const router = useRouter();
+  const { session } = Route.useRouteContext();
   const loaderData = Route.useLoaderData();
   const result = useAtomValue(todosListAtom);
   const value = AsyncResult.isSuccess(result) ? result.value : loaderData;
@@ -26,12 +30,22 @@ function TodoApp() {
   const deleteTodo = useAtomSet(deleteTodoFn);
   const [title, setTitle] = useState("");
 
+  const privateHealthResult = useAtomValue(privateHealthAtom);
+  const signOut = useAtomSet(signOutFn, { mode: "promise" });
+
   const onSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     const trimmed = title.trim();
     if (trimmed.length === 0) return;
     createTodo({ title: trimmed });
     setTitle("");
+  };
+
+  const onSignOut = () => {
+    void signOut(undefined).then(
+      () => router.invalidate(),
+      () => undefined,
+    );
   };
 
   return (
@@ -44,6 +58,36 @@ function TodoApp() {
           Create, complete, and delete todos via Effect Atom.
         </p>
       </header>
+
+      <section className="space-y-3 rounded-lg border border-border p-4">
+        <h2 className="text-sm font-medium">Auth</h2>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Signed in as{" "}
+            <span className="font-medium text-foreground">{session.email}</span>
+          </p>
+          {AsyncResult.isSuccess(privateHealthResult) ? (
+            <p className="rounded-md border border-dashed px-3 py-2 text-sm">
+              {privateHealthResult.value.message}
+            </p>
+          ) : AsyncResult.isFailure(privateHealthResult) ? (
+            <p className="text-sm text-muted-foreground">
+              Private health unavailable
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Loading private message…
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="rounded-md border border-input px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+          >
+            Sign out
+          </button>
+        </div>
+      </section>
 
       <form onSubmit={onSubmit} className="flex gap-2">
         <input

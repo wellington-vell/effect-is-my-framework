@@ -34,23 +34,35 @@
     "db-studio": {
       "cache": false,
       "persistent": true
+    },
+    "seed": {
+      "cache": false
     }
   },
   "boundaries": {
     "tags": {
       "shared": {
         "dependencies": {
-          "deny": ["contracts", "domain", "core", "db", "env", "web", "server"]
+          "deny": [
+            "contracts",
+            "domain",
+            "core",
+            "db",
+            "env",
+            "auth",
+            "web",
+            "server"
+          ]
         }
       },
       "contracts": {
         "dependencies": {
-          "deny": ["domain", "core", "db", "env", "web", "server"]
+          "deny": ["domain", "core", "db", "env", "auth", "web", "server"]
         }
       },
       "domain": {
         "dependencies": {
-          "deny": ["contracts", "core", "web", "server"]
+          "deny": ["contracts", "core", "auth", "web", "server"]
         }
       },
       "core": {
@@ -60,7 +72,15 @@
       },
       "db": {
         "dependencies": {
-          "deny": ["contracts", "domain", "core", "shared", "web", "server"]
+          "deny": [
+            "contracts",
+            "domain",
+            "core",
+            "shared",
+            "auth",
+            "web",
+            "server"
+          ]
         }
       },
       "env": {
@@ -71,9 +91,15 @@
             "core",
             "db",
             "shared",
+            "auth",
             "web",
             "server"
           ]
+        }
+      },
+      "auth": {
+        "dependencies": {
+          "deny": ["contracts", "domain", "core", "web", "server"]
         }
       },
       "web": {

@@ -2,6 +2,7 @@ import { assert, describe, it } from "@effect/vitest";
 import { Effect, Layer, type Layer as LayerType } from "effect";
 import { HttpRouter } from "effect/unstable/http";
 
+import { Auth } from "@acme/auth/service";
 import { Database } from "@acme/db/database";
 import { Env } from "@acme/env/server";
 import { AppRoutesLayer } from "@acme/server/layer";
@@ -13,7 +14,29 @@ const TestEnv = Layer.succeed(Env, {
   host: "0.0.0.0",
   databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
   corsOrigins: ["http://localhost:3000"],
+  betterAuthSecret: "test-secret-min-32-characters-long!",
+  betterAuthUrl: "http://localhost:3000",
 });
+
+const StubAuth = Layer.succeed(
+  Auth,
+  Auth.of({
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- test stub
+    instance: {
+      handler: async () => new Response("Not Found", { status: 404 }),
+      api: {
+        getSession: async () => null,
+        signInEmail: async () => {
+          throw new Error("not implemented in stub");
+        },
+        signOut: async () => {
+          throw new Error("not implemented in stub");
+        },
+      },
+    } as unknown as Auth["Service"]["instance"],
+    getSession: async () => null,
+  }),
+);
 
 const sampleTodo: Todo = {
   id: 1,
@@ -55,7 +78,11 @@ const makeMockDatabase = (options?: {
 };
 
 const makeTestAppRoutes = (database: Layer.Layer<Database>) =>
-  AppRoutesLayer.pipe(Layer.provide(database), Layer.provide(TestEnv));
+  AppRoutesLayer.pipe(
+    Layer.provide(database),
+    Layer.provide(StubAuth),
+    Layer.provide(TestEnv),
+  );
 
 const fetchRequest = (
   testAppRoutes: ReturnType<typeof makeTestAppRoutes>,

@@ -1,5 +1,5 @@
 {
-  "name": "@acme/core",
+  "name": "@acme/auth",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,16 +11,18 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@acme/auth": "workspace:*",
-    "@acme/contracts": "workspace:*",
-    "@acme/domain": "workspace:*",
-    "@acme/shared": "workspace:*",
-    "effect": "catalog:"
+    "@acme/db": "workspace:*",
+    "@acme/env": "workspace:*",
+    "@better-auth/drizzle-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "effect": "catalog:",
+    "pg": "catalog:"
   },
   "devDependencies": {
-    "@acme/db": "workspace:*",
     "@effect/vitest": "catalog:",
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "tsdown": "catalog:",
     "vitest": "catalog:"
   }

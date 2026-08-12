@@ -3,12 +3,15 @@ import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiScalar } from "effect/unstable/httpapi";
 import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
 
+import { AuthRoutesLayer } from "@acme/auth/layer";
 import { AppApi } from "@acme/contracts/http/api";
 import { AppRpcs } from "@acme/contracts/rpc/index";
 import { HandlersLayer } from "@acme/core/handlers";
+import { RequireAuthLive } from "@acme/core/middleware/auth";
 import { Env } from "@acme/env/server";
 
 const RoutesLayer = Layer.mergeAll(
+  AuthRoutesLayer,
   RpcServer.layerHttp({
     group: AppRpcs,
     path: "/rpc",
@@ -35,7 +38,7 @@ export const AppRoutesLayer = Layer.mergeAll(
       return HttpRouter.cors({
         allowedOrigins: corsOrigins,
         allowedMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
+        // allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
         credentials: true,
         maxAge: 600,
       });
@@ -44,6 +47,7 @@ export const AppRoutesLayer = Layer.mergeAll(
 ).pipe(
   Layer.provide(RpcSerialization.layerNdjson),
   Layer.provideMerge(HandlersLayer),
+  Layer.provideMerge(RequireAuthLive),
 );
 
 /** Full application layer for NodeHttpServer — includes HttpRouter.serve. */

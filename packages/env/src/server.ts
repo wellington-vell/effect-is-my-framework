@@ -3,6 +3,7 @@ import { Config, Context, Layer, Schema, type PlatformError } from "effect";
 import { createLayerWithDotEnv, nodeEnv } from "@acme/env/config";
 
 const defaultDatabaseUrl = "postgresql://postgres:postgres@localhost:5432/acme";
+const defaultBetterAuthSecret = "dev-only-change-me-min-32-chars!!";
 
 const port = Config.schema(Config.Port, "PORT").pipe(Config.withDefault(3001));
 
@@ -25,6 +26,22 @@ const parsedCorsOrigins = Config.map(corsOrigins, (origins) =>
     .filter(Boolean),
 );
 
+const betterAuthSecret = Config.schema(
+  Schema.String,
+  "BETTER_AUTH_SECRET",
+).pipe(Config.withDefault(defaultBetterAuthSecret));
+
+const betterAuthUrl = Config.schema(Schema.String, "BETTER_AUTH_URL").pipe(
+  Config.orElse(() =>
+    Config.all({ host, port }).pipe(
+      Config.map(
+        ({ host: h, port: p }) =>
+          `http://${h === "0.0.0.0" ? "localhost" : h}:${p}`,
+      ),
+    ),
+  ),
+);
+
 /**
  * Config fragment for `NodeHttpServer.layerConfig` listen options.
  */
@@ -42,6 +59,8 @@ const envConfig = Config.all({
   host,
   databaseUrl,
   corsOrigins: parsedCorsOrigins,
+  betterAuthSecret,
+  betterAuthUrl,
 });
 
 export class Env extends Context.Service<
@@ -52,6 +71,8 @@ export class Env extends Context.Service<
     readonly host: string;
     readonly databaseUrl: string;
     readonly corsOrigins: ReadonlyArray<string>;
+    readonly betterAuthSecret: string;
+    readonly betterAuthUrl: string;
   }
 >()("@acme/Env") {
   static readonly config: Config.Config<Env["Service"]> = envConfig;

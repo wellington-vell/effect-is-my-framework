@@ -20,6 +20,8 @@ describe("Env config", () => {
           host: "localhost",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:8080",
         }),
       );
     }),
@@ -40,6 +42,8 @@ describe("Env config", () => {
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:3000",
         }),
       );
     }),
@@ -60,6 +64,8 @@ describe("Env config", () => {
           host: "localhost",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:3001",
         }),
       );
     }),
@@ -80,6 +86,8 @@ describe("Env config", () => {
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:4000",
         }),
       );
     }),
@@ -97,6 +105,8 @@ describe("Env config", () => {
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:3001",
         }),
       );
     }),
@@ -199,6 +209,8 @@ describe("Env config", () => {
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:1",
         }),
       );
     }),
@@ -216,6 +228,8 @@ describe("Env config", () => {
           host: "0.0.0.0",
           databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
           corsOrigins: ["http://localhost:3000"],
+          betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+          betterAuthUrl: "http://localhost:65535",
         }),
       );
     }),

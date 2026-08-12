@@ -20,6 +20,8 @@ describe("Env.layer", () => {
         host: "localhost",
         databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
         corsOrigins: ["http://localhost:3000"],
+        betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+        betterAuthUrl: "http://localhost:8080",
       });
     }),
   );
@@ -36,6 +38,8 @@ describe("Env.layer", () => {
         host: "0.0.0.0",
         databaseUrl: "postgresql://postgres:postgres@localhost:5432/acme",
         corsOrigins: ["http://localhost:3000"],
+        betterAuthSecret: "dev-only-change-me-min-32-chars!!",
+        betterAuthUrl: "http://localhost:3001",
       });
     }),
   );
