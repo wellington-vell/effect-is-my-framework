@@ -13,5 +13,5 @@ export const todos = pgTable("todos", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export type Todo = typeof todos.$inferSelect;
+export type TodoRow = typeof todos.$inferSelect;
 export type NewTodo = typeof todos.$inferInsert;

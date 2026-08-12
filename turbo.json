@@ -37,6 +37,55 @@
     }
   },
   "boundaries": {
-    "tags": {}
+    "tags": {
+      "shared": {
+        "dependencies": {
+          "deny": ["contracts", "domain", "core", "db", "env", "web", "server"]
+        }
+      },
+      "contracts": {
+        "dependencies": {
+          "deny": ["domain", "core", "db", "env", "web", "server"]
+        }
+      },
+      "domain": {
+        "dependencies": {
+          "deny": ["contracts", "core", "web", "server"]
+        }
+      },
+      "core": {
+        "dependencies": {
+          "deny": ["web", "server"]
+        }
+      },
+      "db": {
+        "dependencies": {
+          "deny": ["contracts", "domain", "core", "shared", "web", "server"]
+        }
+      },
+      "env": {
+        "dependencies": {
+          "deny": [
+            "contracts",
+            "domain",
+            "core",
+            "db",
+            "shared",
+            "web",
+            "server"
+          ]
+        }
+      },
+      "web": {
+        "dependencies": {
+          "deny": ["domain", "core", "db", "server"]
+        }
+      },
+      "server": {
+        "dependencies": {
+          "deny": ["web"]
+        }
+      }
+    }
   }
 }

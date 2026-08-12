@@ -25,14 +25,16 @@ The sample feature is a **Todos CRUD** application.
 
 ```
 ├── apps/
-│   ├── server/          # Node.js HTTP API server
+│   ├── server/          # Node.js HTTP API server (composition root)
 │   └── web/             # React SPA frontend
 ├── packages/
-│   ├── api/             # HTTP API + RPC definitions and handlers
+│   ├── shared/          # Shared kernel (schemas + tagged errors)
+│   ├── contracts/       # HttpApi/Rpc transport contracts
+│   ├── domain/          # Business logic (Context services)
+│   ├── core/            # Transport handlers
 │   ├── db/              # Database layer (Drizzle ORM + Effect)
 │   ├── env/             # Typed environment configuration
-│   ├── auth/            # (placeholder)
-│   └── shared/          # (placeholder)
+│   └── auth/            # (placeholder)
 └── repos/
     └── effect/          # Vendored Effect library (read-only reference)
 ```

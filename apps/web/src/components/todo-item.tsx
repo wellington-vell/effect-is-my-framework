@@ -1,6 +1,4 @@
-import { TodoSchema } from "@acme/api/contracts/rpc/todos";
-
-type Todo = typeof TodoSchema.Type;
+import type { Todo } from "@acme/shared/todos";
 
 type TodoItemProps = {
   readonly todo: Todo;

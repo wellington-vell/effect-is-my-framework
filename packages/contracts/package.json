@@ -1,0 +1,22 @@
+{
+  "name": "@acme/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsdown --clean",
+    "clean": "rm -rf dist node_modules",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@acme/shared": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
+  }
+}

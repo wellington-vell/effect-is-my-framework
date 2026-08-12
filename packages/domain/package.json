@@ -1,0 +1,24 @@
+{
+  "name": "@acme/domain",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsdown --clean",
+    "clean": "rm -rf dist node_modules",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@acme/db": "workspace:*",
+    "@acme/shared": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@effect/vitest": "catalog:",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
+  }
+}

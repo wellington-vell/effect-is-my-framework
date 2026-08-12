@@ -1,6 +1,8 @@
 import { assert, describe, it } from "@effect/vitest";
 import { Option } from "effect";
-import { isTodoNotFound, todoNotFoundMessage } from "@/lib/atoms/todos";
+import { todoNotFoundMessage } from "@/lib/atoms/todos";
+
+import { isTodoNotFound } from "@acme/shared/errors";
 
 describe("todos", () => {
   describe("isTodoNotFound", () => {

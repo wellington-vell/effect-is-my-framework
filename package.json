@@ -22,6 +22,7 @@
   },
   "type": "module",
   "scripts": {
+    "boundaries": "turbo boundaries",
     "build": "turbo build",
     "check": "oxlint --type-aware --type-check apps/ packages/ && oxfmt --write .",
     "clean": "turbo clean",

@@ -1,10 +1,23 @@
-## Vendored Repositories
+## Vendored repos (`repos/`)
 
-This project vendors external repositories under `repos/`
+- Read-only reference — prefer vendored source over guesses or web search
+- Do not edit or import from `repos/`; app code uses normal package deps
+- For Effect idioms, use `repos/effect/` as source of truth
 
-- Use vendored repositories as read-only reference material when working with related libraries
-- Prefer examples and patterns from the vendored source code over generated guesses or web search results
-- Do not edit files under `repos/` unless explicitly asked
-- Do not import from `repos/` - application code should continue importing from normal package dependencies
+## Package layout
 
-When writing Effect code, inspect `repos/effect/` for examples of idiomatic usage, tests, module structure, and API design. Treat it as the source of truth for Effect patterns.
+| Package           | Role                                     |
+| ----------------- | ---------------------------------------- |
+| `@acme/shared`    | Schemas + tagged errors (web + server)   |
+| `@acme/contracts` | HttpApi / Rpc groups only                |
+| `@acme/domain`    | Context services, DB → error mapping     |
+| `@acme/core`      | Transport handlers (`health/`, `todos/`) |
+| `@acme/db`        | Persistence                              |
+| `apps/server`     | Composition root (`AppLayer`)            |
+
+**Rules:**
+
+- Errors/schemas stay in `@acme/shared` (not domain) so web can use them without domain/db
+- Handlers in `@acme/core`; compose in `apps/server` — do not put `AppLayer` in core
+- Core must not import `@acme/db` in production code (devDependency OK for test mocks)
+- After structural changes: `bun run boundaries` (`turbo.json` deny-lists; tags apply transitively)

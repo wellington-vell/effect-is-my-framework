@@ -2,7 +2,7 @@
 # See https://docs.fallow.tools for documentation
 
 entry = ["src/index.{ts,tsx,js,jsx}", "src/main.{ts,tsx,js,jsx}"]
-ignorePatterns = ["**/repos/**", "packages/auth/**", "packages/shared/**"]
+ignorePatterns = ["**/repos/**", "packages/auth/**"]
 
 [workspaces]
 patterns = ["apps/*", "packages/*"]

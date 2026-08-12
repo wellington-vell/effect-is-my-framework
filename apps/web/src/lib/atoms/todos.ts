@@ -2,13 +2,9 @@ import { Option } from "effect";
 import { TodosClient } from "@/lib/atoms/rpc";
 import { withToast } from "@/lib/atoms/with-toast";
 
-const todosReactivityKey = ["todos"] as const;
+import { isTodoNotFound } from "@acme/shared/errors";
 
-export const isTodoNotFound = (error: unknown): boolean =>
-  typeof error === "object" &&
-  error !== null &&
-  "_tag" in error &&
-  error._tag === "TodoNotFound";
+const todosReactivityKey = ["todos"] as const;
 
 export const todoNotFoundMessage = (error: Option.Option<unknown>) =>
   Option.match(error, {

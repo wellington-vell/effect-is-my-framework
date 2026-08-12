@@ -19,9 +19,7 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
-      "@acme/core/*": ["../../packages/core/src/*"],
-      "@acme/env": ["../../packages/env/src/server.ts"],
-      "@acme/server/*": ["./src/*"]
+      "@acme/contracts/*": ["./src/*"]
     }
   }
 }

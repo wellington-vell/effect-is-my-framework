@@ -3,7 +3,7 @@ import { FetchHttpClient } from "effect/unstable/http";
 import { AtomRpc } from "effect/unstable/reactivity";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 
-import { TodosRpc } from "@acme/api/contracts/rpc/todos";
+import { TodosRpc } from "@acme/contracts/rpc/todos";
 
 const rpcUrl = new URL(
   "/rpc",

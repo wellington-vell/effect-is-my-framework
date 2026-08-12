@@ -10,8 +10,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@acme/api": "workspace:*",
+    "@acme/contracts": "workspace:*",
     "@acme/env": "workspace:*",
+    "@acme/shared": "workspace:*",
     "@effect/atom-react": "catalog:",
     "@fontsource-variable/archivo": "5.3.0",
     "@fontsource-variable/geist": "5.3.0",
